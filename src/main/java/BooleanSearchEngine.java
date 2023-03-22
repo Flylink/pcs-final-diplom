@@ -34,6 +34,10 @@ public class BooleanSearchEngine implements SearchEngine {
                 freqs.clear();
             }
         }
+        // сортировка на этапе индексации
+        for (List<PageEntry> pageEntries : words.values()) {
+            Collections.sort(pageEntries);
+        }
     }
 
     @Override
@@ -42,7 +46,6 @@ public class BooleanSearchEngine implements SearchEngine {
         if (words.containsKey(word.toLowerCase())) {
             result.addAll(words.get(word.toLowerCase()));
         }
-        Collections.sort(result);
         return result;
     }
 }
