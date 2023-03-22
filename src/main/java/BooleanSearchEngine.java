@@ -10,9 +10,9 @@ public class BooleanSearchEngine implements SearchEngine {
     private final Map<String, List<PageEntry>> words;
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
-        List<File> PDFList = List.of(Objects.requireNonNull(pdfsDir.listFiles()));
+        List<File> pdfList = List.of(Objects.requireNonNull(pdfsDir.listFiles()));
         words = new HashMap<>();
-        for (File pdf : PDFList) {
+        for (File pdf : pdfList) {
             var doc = new PdfDocument(new PdfReader(pdf));
             for (int i = 0; i < doc.getNumberOfPages(); i++) {
                 var text = PdfTextExtractor.getTextFromPage(doc.getPage(i + 1));
@@ -26,7 +26,7 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
                 int count;
                 for (var word : freqs.keySet()) {
-                    if (freqs.get(word.toLowerCase()) != null) {
+                    if (freqs.containsKey(word.toLowerCase())) {
                         count = freqs.get(word.toLowerCase());
                         this.words.computeIfAbsent(word.toLowerCase(), w -> new ArrayList<>()).add(new PageEntry(pdf.getName(), i + 1, count));
                     }
@@ -39,7 +39,7 @@ public class BooleanSearchEngine implements SearchEngine {
     @Override
     public List<PageEntry> search(String word) {
         List<PageEntry> result = new ArrayList<>();
-        if (words.get(word.toLowerCase()) != null) {
+        if (words.containsKey(word.toLowerCase())) {
             result.addAll(words.get(word.toLowerCase()));
         }
         Collections.sort(result);
